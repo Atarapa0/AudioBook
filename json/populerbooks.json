@@ -1,44 +1,44 @@
 [
   {
-    "rating": "4.7",
-    "title": "Alice'in Harikalar Diyarında Maceraları: Chapter I",
-    "text": "Down the Rabbit-Hole",
-    "img": "assets/img/slider-1.png",
-    "audio": "alice-chapter1.mp3"
-  },
-  {
-    "rating": "4.6",
-    "title": "Alice'in Harikalar Diyarında Maceraları: Chapter II",
-    "text": "The Pool of Tears",
-    "img": "assets/img/slider-2.png",
-    "audio": "alice-chapter2.mp3"
-  },
-  {
-    "rating": "4.8",
-    "title": "Alice'in Harikalar Diyarında Maceraları: Chapter III",
-    "text": "A Caucus-Race and a Long Tale",
-    "img": "assets/img/slider-3.png",
-    "audio": "alice-chapter3.mp3"
-  },
-  {
     "rating": "4.9",
     "title": "Sherlock Holmes: Adventure 1",
     "text": "Silver Blaze",
-    "img": "assets/img/slider-4.png",
+    "img": "assets/img/slider-1.png",
     "audio": "sherlock-adventure1.mp3"
   },
   {
     "rating": "4.7",
     "title": "Sherlock Holmes: Adventure 2",
     "text": "The Yellow Face",
-    "img": "assets/img/slider-5.png",
+    "img": "assets/img/slider-2.png",
     "audio": "sherlock-adventure2.mp3"
   },
   {
     "rating": "4.8",
     "title": "Sherlock Holmes: Adventure 3",
     "text": "The Stockbroker’s Clerk",
-    "img": "assets/img/slider-6.png",
+    "img": "assets/img/slider-3.png",
     "audio": "sherlock-adventure3.mp3"
+  },
+  {
+    "rating": "4.7",
+    "title": "Alice'in Harikalar Diyarında Maceraları: Chapter I",
+    "text": "Down the Rabbit-Hole",
+    "img": "assets/img/slider-4.png",
+    "audio": "alice-chapter1.mp3"
+  },
+  {
+    "rating": "4.6",
+    "title": "Alice'in Harikalar Diyarında Maceraları: Chapter II",
+    "text": "The Pool of Tears",
+    "img": "assets/img/slider-5.png",
+    "audio": "alice-chapter2.mp3"
+  },
+  {
+    "rating": "4.8",
+    "title": "Alice'in Harikalar Diyarında Maceraları: Chapter III",
+    "text": "A Caucus-Race and a Long Tale",
+    "img": "assets/img/slider-6.png",
+    "audio": "alice-chapter3.mp3"
   }
 ]
