@@ -9,10 +9,12 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  List? populerBooks; // Null güvenliği için nullable olarak tanımlandı.
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  List? populerBooks;
+  ScrollController scrollController = ScrollController();
+  late TabController tabController;
 
-  ReadData() async {
+  readData() async {
     await DefaultAssetBundle.of(context)
         .loadString("json/populerbooks.json")
         .then((s) {
@@ -25,8 +27,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    ReadData();
+    readData(); // JSON verisini okuyor
+    tabController = TabController(length: 3, vsync: this); // TabController başlatılıyor
+    scrollController = ScrollController(); // ScrollController başlatılıyor
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,28 +41,27 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           body: Column(
             children: [
-              // Üst Menü
               Container(
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ImageIcon(
-                        AssetImage("assets/img/menu.png"),
-                        size: 25,
-                        color: Colors.black,
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.search),
-                          SizedBox(width: 15),
-                          Icon(Icons.notifications),
-                        ],
-                      )
-                    ],
-                  )),
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ImageIcon(
+                      AssetImage("assets/img/menu.png"),
+                      size: 25,
+                      color: Colors.black,
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.search),
+                        SizedBox(width: 15),
+                        Icon(Icons.notifications),
+                      ],
+                    )
+                  ],
+                ),
+              ),
               SizedBox(height: 20),
-              // Başlık
               Row(
                 children: [
                   Container(
@@ -65,13 +69,14 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       "Populer Books",
                       style: TextStyle(
-                          fontSize: 30, fontWeight: FontWeight.bold),
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
               SizedBox(height: 20),
-              // Slider
               SizedBox(
                 height: 180,
                 child: Stack(
@@ -84,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                         height: 180,
                         child: PageView.builder(
                           controller: PageController(viewportFraction: 0.8),
-                          itemCount: populerBooks?.length ?? 0, // Null kontrolü
+                          itemCount: populerBooks?.length ?? 0,
                           itemBuilder: (_, index) {
                             return Container(
                               height: 180,
@@ -94,7 +99,8 @@ class _HomePageState extends State<HomePage> {
                                 borderRadius: BorderRadius.circular(30),
                                 image: DecorationImage(
                                   image: AssetImage(
-                                      populerBooks![index]["img"]),
+                                    populerBooks![index]["img"],
+                                  ),
                                   fit: BoxFit.fill,
                                 ),
                               ),
@@ -105,7 +111,129 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-              )
+              ),
+              Expanded(
+                child: NestedScrollView(
+                  controller: scrollController,
+                  headerSliverBuilder: (BuildContext context, bool isScroll) {
+                    return [
+                      SliverAppBar(
+                        pinned: true,
+                        bottom: PreferredSize(
+                          preferredSize: Size.fromHeight(50),
+                          child: Container(
+                            margin: const EdgeInsets.all(0),
+                            child: TabBar(
+                              controller: tabController,
+                              isScrollable: true,
+                              indicator: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withAlpha(51),
+                                    blurRadius: 7,
+                                    offset: Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              tabs: [
+                                Container(
+                                  width: 120,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.blue,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withAlpha(51),
+                                        blurRadius: 7,
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    "New",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Container(
+                                  width: 120,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.blue,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withAlpha(51),
+                                        blurRadius: 7,
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    "Popular",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Container(
+                                  width: 120,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.blue,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withAlpha(51),
+                                        blurRadius: 7,
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    "Trending",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ];
+                  },
+                  body: TabBarView(
+                    controller: tabController,
+                      children: [
+                        Material(
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.blue,
+                            ),
+                            title: Text("Context"),
+                          ),
+                        ),
+                        Material(
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.blue,
+                            ),
+                            title: Text("Context"),
+                          ),
+                        ),
+                        Material(
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.blue,
+                            ),
+                            title: Text("Context"),
+                          ),
+                        ),
+                      ]),
+                ),
+              ),
             ],
           ),
         ),
