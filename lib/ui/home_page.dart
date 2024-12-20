@@ -70,19 +70,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-3
-4
-5
-6
-7
-8
-9
-
-
-
-# Git add ile eklemiş olduğunuz değişikliği eklemeye yarar.
-# NOT eğer commit mesajını da değiştirmek istiyorsanız --no-edit kısmını kaldırmalısınız.
-$ git commit --all --amend --no-edit
-
-# HEAD'i eski pozisyonuna geri taşır
-$ git rebase --continue
