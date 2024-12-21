@@ -9,7 +9,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   List? populerBooks;
   ScrollController scrollController = ScrollController();
   late TabController tabController;
@@ -27,11 +28,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    readData(); // JSON verisini okuyor
-    tabController = TabController(length: 3, vsync: this); // TabController başlatılıyor
-    scrollController = ScrollController(); // ScrollController başlatılıyor
+    readData();
+    tabController =
+        TabController(length: 3, vsync: this);
+    scrollController = ScrollController();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -119,31 +120,34 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     return [
                       SliverAppBar(
                         pinned: true,
+                        backgroundColor: colorfile.sliverBackground,
                         bottom: PreferredSize(
-                          preferredSize: Size.fromHeight(50),
+                          preferredSize: Size.fromHeight(30),
                           child: Container(
-                            margin: const EdgeInsets.all(0),
+                            padding: const EdgeInsets.only(bottom:20),
+                            alignment: Alignment
+                                .center,
                             child: TabBar(
+                              indicatorColor: Colors.transparent,
+                              indicatorPadding:
+                                  EdgeInsets.symmetric(horizontal: 10),
+                              indicatorSize: TabBarIndicatorSize.label,
                               controller: tabController,
-                              isScrollable: true,
+                              isScrollable:
+                                  false,
                               indicator: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withAlpha(51),
-                                    blurRadius: 7,
-                                    offset: Offset(0, 0),
-                                  ),
-                                ],
+                                color: Colors.transparent,
                               ),
                               tabs: [
                                 Container(
-                                  width: 120,
+                                  width: MediaQuery.of(context).size.width /
+                                      3.5,
                                   height: 50,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Colors.blue,
+                                    color: colorfile.menu1Color,
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.grey.withAlpha(51),
@@ -158,12 +162,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                                   ),
                                 ),
                                 Container(
-                                  width: 120,
+                                  width: MediaQuery.of(context).size.width /
+                                      3.5,
                                   height: 50,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Colors.blue,
+                                    color: colorfile.menu2Color,
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.grey.withAlpha(51),
@@ -178,12 +183,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                                   ),
                                 ),
                                 Container(
-                                  width: 120,
+                                  width: MediaQuery.of(context).size.width /
+                                      3.5, 
                                   height: 50,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Colors.blue,
+                                    color: colorfile.menu3Color,
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.grey.withAlpha(51),
@@ -204,34 +210,32 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       ),
                     ];
                   },
-                  body: TabBarView(
-                    controller: tabController,
-                      children: [
-                        Material(
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blue,
-                            ),
-                            title: Text("Context"),
-                          ),
+                  body: TabBarView(controller: tabController, children: [
+                    Material(
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.blue,
                         ),
-                        Material(
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blue,
-                            ),
-                            title: Text("Context"),
-                          ),
+                        title: Text("Context"),
+                      ),
+                    ),
+                    Material(
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.blue,
                         ),
-                        Material(
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blue,
-                            ),
-                            title: Text("Context"),
-                          ),
+                        title: Text("Contextee"),
+                      ),
+                    ),
+                    Material(
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.blue,
                         ),
-                      ]),
+                        title: Text("Contextaaa"),
+                      ),
+                    ),
+                  ]),
                 ),
               ),
             ],
