@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ebook/ui/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:ebook/ui/colorfile.dart' as colorfile;
 
@@ -12,6 +13,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   List? populerBooks;
+  List? books;
   ScrollController scrollController = ScrollController();
   late TabController tabController;
 
@@ -24,13 +26,22 @@ class _HomePageState extends State<HomePage>
       });
     });
   }
+  readBooks() async {
+    await DefaultAssetBundle.of(context)
+        .loadString("json/books.json")
+        .then((s) {
+      setState(() {
+        books = json.decode(s);
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     readData();
-    tabController =
-        TabController(length: 3, vsync: this);
+    readBooks();
+    tabController = TabController(length: 3, vsync: this);
     scrollController = ScrollController();
   }
 
@@ -124,84 +135,33 @@ class _HomePageState extends State<HomePage>
                         bottom: PreferredSize(
                           preferredSize: Size.fromHeight(30),
                           child: Container(
-                            padding: const EdgeInsets.only(bottom:20),
-                            alignment: Alignment
-                                .center,
+                            padding: const EdgeInsets.only(bottom: 20),
+                            alignment: Alignment.center,
                             child: TabBar(
-                              indicatorColor: Colors.transparent,
+                              indicatorColor:
+                                  Colors.transparent, // Zaten eklemişsiniz
+                              dividerColor: Colors
+                                  .transparent, // Çizgiyi kaldırmak için bunu ekleyin
                               indicatorPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
                               indicatorSize: TabBarIndicatorSize.label,
                               controller: tabController,
-                              isScrollable:
-                                  false,
+                              isScrollable: false,
                               indicator: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 color: Colors.transparent,
                               ),
                               tabs: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width /
-                                      3.5,
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: colorfile.menu1Color,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withAlpha(51),
-                                        blurRadius: 7,
-                                        offset: Offset(0, 0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Text(
-                                    "New",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                                AppTabs(
+                                  color: colorfile.menu1Color,
+                                  text: "New",
                                 ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width /
-                                      3.5,
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
+                                AppTabs(
                                     color: colorfile.menu2Color,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withAlpha(51),
-                                        blurRadius: 7,
-                                        offset: Offset(0, 0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Text(
-                                    "Popular",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width /
-                                      3.5, 
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: colorfile.menu3Color,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withAlpha(51),
-                                        blurRadius: 7,
-                                        offset: Offset(0, 0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Text(
-                                    "Trending",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                                    text: "Populer"),
+                                AppTabs(
+                                  color: colorfile.menu3Color,
+                                  text: "Trend",
                                 ),
                               ],
                             ),
@@ -211,29 +171,261 @@ class _HomePageState extends State<HomePage>
                     ];
                   },
                   body: TabBarView(controller: tabController, children: [
-                    Material(
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue,
-                        ),
-                        title: Text("Context"),
-                      ),
+                    ListView.builder(
+                      itemCount: books?.length ?? 0,
+                      itemBuilder: (_, index) {
+                        return Container(
+                          margin: const EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                            bottom: 10,
+                            top: 10,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: colorfile.tabVarViewColor,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 2,
+                                  offset: Offset(0, 0),
+                                  color: Colors.grey.withAlpha(51),
+                                ),
+                              ],
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 90,
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: AssetImage(books?[index]["img"]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.star, color: colorfile.starColor, size: 24,),
+                                          SizedBox(width: 5),
+                                          Text(books?[index]["rating"],style: TextStyle(
+                                            color: colorfile.menu2Color,
+                                          ),),
+                                        ],
+                                      ),
+                                      Text(books?[index]["title"],style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: "Avenir",
+                                        fontWeight: FontWeight.bold,
+                                      ),),
+                                      Text(books?[index]["text"],style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: "Avenir",
+                                        color: colorfile.subTitleText,
+                                      ),),
+                                      Container(
+                                        width: 50,
+                                        height: 15,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          color: colorfile.loveColor,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text("Love",style: TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: "Avenir",
+                                          color: Colors.white,
+                                        ),),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+
+
+                          ),
+                        );
+                      },
                     ),
-                    Material(
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue,
-                        ),
-                        title: Text("Contextee"),
-                      ),
+                    ListView.builder(
+                      itemCount: (books?.length ?? 0),
+                      itemBuilder: (_, index) {
+                        int reverseIndex = (books!.length - 1) - index;
+                        return Container(
+                          margin: const EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                            bottom: 10,
+                            top: 10,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: colorfile.tabVarViewColor,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 2,
+                                  offset: Offset(0, 0),
+                                  color: Colors.grey.withAlpha(51),
+                                ),
+                              ],
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 90,
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: AssetImage(books?[reverseIndex]["img"]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.star, color: colorfile.starColor, size: 24,),
+                                          SizedBox(width: 5),
+                                          Text(books?[reverseIndex]["rating"],style: TextStyle(
+                                            color: colorfile.menu2Color,
+                                          ),),
+                                        ],
+                                      ),
+                                      Text(books?[reverseIndex]["title"],style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: "Avenir",
+                                        fontWeight: FontWeight.bold,
+                                      ),),
+                                      Text(books?[reverseIndex]["text"],style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: "Avenir",
+                                        color: colorfile.subTitleText,
+                                      ),),
+                                      Container(
+                                        width: 50,
+                                        height: 15,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          color: colorfile.loveColor,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text("Love",style: TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: "Avenir",
+                                          color: Colors.white,
+                                        ),),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+
+
+                          ),
+                        );
+                      },
                     ),
-                    Material(
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue,
-                        ),
-                        title: Text("Contextaaa"),
-                      ),
+                    ListView.builder(
+                      itemCount: (books?.length ?? 0),
+                      itemBuilder: (_, index) {
+                        return Container(
+                          margin: const EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                            bottom: 10,
+                            top: 10,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: colorfile.tabVarViewColor,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 2,
+                                  offset: Offset(0, 0),
+                                  color: Colors.grey.withAlpha(51),
+                                ),
+                              ],
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 90,
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: AssetImage(books?[index]["img"]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.star, color: colorfile.starColor, size: 24,),
+                                          SizedBox(width: 5),
+                                          Text(books?[index]["rating"],style: TextStyle(
+                                            color: colorfile.menu2Color,
+                                          ),),
+                                        ],
+                                      ),
+                                      Text(books?[index]["title"],style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: "Avenir",
+                                        fontWeight: FontWeight.bold,
+                                      ),),
+                                      Text(books?[index]["text"],style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: "Avenir",
+                                        color: colorfile.subTitleText,
+                                      ),),
+                                      Container(
+                                        width: 50,
+                                        height: 15,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5),
+                                          color: colorfile.loveColor,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text("Love",style: TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: "Avenir",
+                                          color: Colors.white,
+                                        ),),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+
+
+                          ),
+                        );
+                      },
                     ),
                   ]),
                 ),
