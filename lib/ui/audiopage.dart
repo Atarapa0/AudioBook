@@ -1,3 +1,5 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:ebook/ui/Audio_File.dart';
 import 'package:flutter/material.dart';
 import 'package:ebook/ui/colorfile.dart' as colorfile;
 
@@ -9,9 +11,15 @@ class AudioPage extends StatefulWidget {
 }
 
 class _AudioPageState extends State<AudioPage> {
+  late AudioPlayer audioPlayer;
+  @override
+  void initState() {
+    audioPlayer = AudioPlayer();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    final double sceenHeight = MediaQuery.of(context).size.height;
+    final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: colorfile.audioBluishBackground,
@@ -21,7 +29,7 @@ class _AudioPageState extends State<AudioPage> {
               top: 0,
               left: 0,
               right: 0,
-              height: sceenHeight / 3,
+              height: screenHeight / 3,
               child: Container(
                 color: colorfile.audioBlueBackground,
               )),
@@ -40,8 +48,8 @@ class _AudioPageState extends State<AudioPage> {
           Positioned(
             left: 0,
             right: 0,
-            top: sceenHeight *0.20,
-            height: sceenHeight *0.35,
+            top: screenHeight *0.20,
+            height: screenHeight *0.35,
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.white,
@@ -49,11 +57,43 @@ class _AudioPageState extends State<AudioPage> {
               ),
               child: Column(
                 children: [
-                  Text("Books name")
+                  SizedBox(height: screenHeight*0.1),
+                  Text("Books name",style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                      fontFamily: 'Avenir',
+                  ),),
+                  Text("Writer Name",style: TextStyle(
+                    fontSize: 15,
+                    color: colorfile.subTitleText,
+                    fontFamily: 'Avenir',
+                  ),),
+                  AudioFile(audioPlayer: audioPlayer,),
                 ],
               ),
 
             ),),
+          Positioned(
+              left: screenWidth/2-75,
+              right: screenWidth/2-75,
+              top: screenHeight*0.12,
+              height: screenHeight*0.18,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white,width: 2),
+                  color: colorfile.audioGreyBackground,
+                ),
+                child: Padding(padding: const EdgeInsets.all(20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white,width: 2),
+                    image: DecorationImage(image: AssetImage("assets/img/slider-1.png"),fit: BoxFit.cover),
+                  ),
+                ),
+                ),
+          ))
         ],
       ),
     );
