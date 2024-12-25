@@ -4,42 +4,42 @@
     "title": "Sherlock Holmes:",
     "text": "Adventure 1: Silver Blaze",
     "img": "assets/img/slider-1.png",
-    "audio": "assets/audio/sherlock-adventure1.mp3"
+    "audio": "audio/sherlock-adventure1.mp3"
   },
   {
     "rating": "4.7",
     "title": "Sherlock Holmes: ",
     "text": "Adventure 2: The Yellow Face",
     "img": "assets/img/slider-2.png",
-    "audio": "assets/audio/sherlock-adventure2.mp3"
+    "audio": "audio/sherlock-adventure2.mp3"
   },
   {
     "rating": "4.8",
     "title": "Sherlock Holmes:",
     "text": "Adventure 3: The Stockbroker’s Clerk",
     "img": "assets/img/slider-3.png",
-    "audio": "assets/audio/sherlock-adventure3.mp3"
+    "audio": "audio/sherlock-adventure3.mp3"
   },
   {
     "rating": "4.7",
     "title": "Alice’s Adventures in Wonderland:",
     "text": "Chapter I: Down the Rabbit-Hole",
     "img": "assets/img/slider-4.png",
-    "audio": "assets/audio/alice-chapter1.mp3"
+    "audio": "audio/alice-chapter1.mp3"
   },
   {
     "rating": "4.6",
     "title": "Alice’s Adventures in Wonderland:",
     "text": "Chapter II: The Pool of Tears",
     "img": "assets/img/slider-5.png",
-    "audio": "assets/audio/alice-chapter2.mp3"
+    "audio": "audio/alice-chapter2.mp3"
   },
   {
     "rating": "4.8",
     "title": "Alice’s Adventures in Wonderland: ",
     "text": "Chapter III: A Caucus-Race and a Long Tale",
     "img": "assets/img/slider-6.png",
-    "audio": "assets/audio/alice-chapter3.mp3"
+    "audio": "audio/alice-chapter3.mp3"
   }
 
 ]

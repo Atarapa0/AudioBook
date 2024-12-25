@@ -3,125 +3,185 @@ import 'package:audioplayers/audioplayers.dart';
 
 class AudioFile extends StatefulWidget {
   final AudioPlayer audioPlayer;
+  final Map<String, dynamic> bookData;
 
-  const AudioFile({Key? key, required this.audioPlayer}) : super(key: key);
+  const AudioFile({
+    Key? key,
+    required this.audioPlayer,
+    required this.bookData,
+  }) : super(key: key);
 
   @override
   State<AudioFile> createState() => _AudioFileState();
 }
 
 class _AudioFileState extends State<AudioFile> {
-  late AudioPlayer audioPlayer;
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
-
-  String? audioFileName;
-  final String audioPath = "audio/";
+  bool isPlaying = false;
+  bool isRepeated = false;
+  double playbackSpeed = 1.0;
 
   @override
   void initState() {
     super.initState();
-    audioPlayer = widget.audioPlayer;
-
-    // Süre ve konum dinleyicileri
-    audioPlayer.onDurationChanged.listen((Duration d) {
-      setState(() {
-        _duration = d;
-      });
-    });
-
-    audioPlayer.onPositionChanged.listen((Duration p) {
-      setState(() {
-        _position = p;
-      });
-    });
+    _setupAudioPlayer();
   }
 
-  void playAudio(String fileName) async {
+  void _setupAudioPlayer() {
+    // Ses dosyasının süresini dinle
+    widget.audioPlayer.onDurationChanged.listen((Duration d) {
+      if (mounted) {
+        setState(() => _duration = d);
+      }
+    });
+
+    // Çalma pozisyonunu dinle
+    widget.audioPlayer.onPositionChanged.listen((Duration p) {
+      if (mounted) {
+        setState(() => _position = p);
+      }
+    });
+
+    // Oynatma durumunu dinle
+    widget.audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      if (mounted) {
+        setState(() {
+          isPlaying = state == PlayerState.playing;
+        });
+      }
+    });
+
+    // Ses dosyasını yükle
+    _loadAudio();
+  }
+
+  Future<void> _loadAudio() async {
     try {
-      String fullPath = audioPath + fileName;
-      await audioPlayer.setSourceAsset(fullPath);
-      await audioPlayer.resume();
-      setState(() {
-        audioFileName = fileName;
-      });
+      await widget.audioPlayer.setSourceAsset(widget.bookData["audio"]);
     } catch (e) {
-      print("Error playing audio: $e");
+      print("Ses dosyası yüklenirken hata: $e");
     }
   }
-  Widget btnStart(String fileName) {
-    return IconButton(
-      padding: const EdgeInsets.only(bottom: 10),
-      icon: Icon(
-          audioPlayer.state == PlayerState.playing ? Icons.pause_circle_filled : Icons.play_circle_filled,
-        size: 40,
-        color: Colors.blue,
-      ),
-      onPressed: () async {
-        if (audioPlayer.state == PlayerState.playing) {
-          await audioPlayer.pause();
-        } else {
-          playAudio(fileName);
-        }
-      },
-    );
-  }
-  Widget slider(){
-    return Slider(
-      activeColor: Colors.red,
-      inactiveColor: Colors.grey,
-      value: _position.inSeconds.toDouble(),
-      min: 0.0,
-      max: _duration.inSeconds.toDouble(),
-      onChanged: (double value){
-        setState(() {
-          audioPlayer.seek(Duration(seconds: value.toInt()));
-          value=value;
-        });
-      },
-    );
-  }
-  void changeToSeconds(int seconds){
-    Duration newDuration = Duration(seconds: seconds);
-    audioPlayer.seek(newDuration);
+
+  void _togglePlay() async {
+    if (isPlaying) {
+      await widget.audioPlayer.pause();
+    } else {
+      await widget.audioPlayer.resume();
+    }
   }
 
-  Widget loadAssets(){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        btnStart('alice-chapter1.mp3'),
-      ],
-    );
+  void _toggleRepeat() {
+    setState(() {
+      isRepeated = !isRepeated;
+      widget.audioPlayer.setReleaseMode(
+          isRepeated ? ReleaseMode.loop : ReleaseMode.release
+      );
+    });
   }
 
+  void _changeSpeed() {
+    setState(() {
+      // 1.0 -> 1.5 -> 2.0 -> 0.5 -> 1.0 şeklinde döngü
+      if (playbackSpeed == 1.0) playbackSpeed = 1.5;
+      else if (playbackSpeed == 1.5) playbackSpeed = 2.0;
+      else if (playbackSpeed == 2.0) playbackSpeed = 0.5;
+      else playbackSpeed = 1.0;
+
+      widget.audioPlayer.setPlaybackRate(playbackSpeed);
+    });
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(padding: const EdgeInsets.only(left: 20, right: 20),
+        // Süre göstergesi
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                _position.toString().split('.').first,
-                style: const TextStyle(
-                  fontSize: 15,
-                ),
-              ),
-              Text(
-                _duration.toString().split('.').first,
-                style: const TextStyle(
-                  fontSize: 15,
-                ),
-              ),
+              Text(_formatDuration(_position)),
+              Text(_formatDuration(_duration)),
             ],
-          )
+          ),
         ),
-        slider(),
-        loadAssets(),
+
+        // İlerleme çubuğu
+        Slider(
+          value: _position.inSeconds.toDouble(),
+          min: 0,
+          max: _duration.inSeconds.toDouble(),
+          onChanged: (value) async {
+            await widget.audioPlayer.seek(Duration(seconds: value.toInt()));
+          },
+        ),
+
+        // Kontrol butonları
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Hız kontrolü
+            IconButton(
+              icon: Text("${playbackSpeed}x"),
+              onPressed: _changeSpeed,
+            ),
+
+            // Geri sarma
+            IconButton(
+              icon: Icon(Icons.replay_10),
+              onPressed: () async {
+                await widget.audioPlayer.seek(
+                    Duration(seconds: _position.inSeconds - 10)
+                );
+              },
+            ),
+
+            // Oynat/Duraklat
+            IconButton(
+              icon: Icon(
+                isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                size: 40,
+              ),
+              onPressed: _togglePlay,
+            ),
+
+            // İleri sarma
+            IconButton(
+              icon: Icon(Icons.forward_10),
+              onPressed: () async {
+                await widget.audioPlayer.seek(
+                    Duration(seconds: _position.inSeconds + 10)
+                );
+              },
+            ),
+
+            // Tekrar modu
+            IconButton(
+              icon: Icon(
+                isRepeated ? Icons.repeat_one : Icons.repeat,
+                color: isRepeated ? Colors.blue : null,
+              ),
+              onPressed: _toggleRepeat,
+            ),
+          ],
+        ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
