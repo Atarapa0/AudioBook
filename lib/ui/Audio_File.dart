@@ -29,21 +29,18 @@ class _AudioFileState extends State<AudioFile> {
   }
 
   void _setupAudioPlayer() {
-    // Ses dosyasının süresini dinle
     widget.audioPlayer.onDurationChanged.listen((Duration d) {
       if (mounted) {
         setState(() => _duration = d);
       }
     });
 
-    // Çalma pozisyonunu dinle
     widget.audioPlayer.onPositionChanged.listen((Duration p) {
       if (mounted) {
         setState(() => _position = p);
       }
     });
 
-    // Oynatma durumunu dinle
     widget.audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
       if (mounted) {
         setState(() {
@@ -52,7 +49,6 @@ class _AudioFileState extends State<AudioFile> {
       }
     });
 
-    // Ses dosyasını yükle
     _loadAudio();
   }
 
@@ -83,7 +79,6 @@ class _AudioFileState extends State<AudioFile> {
 
   void _changeSpeed() {
     setState(() {
-      // 1.0 -> 1.5 -> 2.0 -> 0.5 -> 1.0 şeklinde döngü
       if (playbackSpeed == 1.0) playbackSpeed = 1.5;
       else if (playbackSpeed == 1.5) playbackSpeed = 2.0;
       else if (playbackSpeed == 2.0) playbackSpeed = 0.5;
@@ -105,7 +100,6 @@ class _AudioFileState extends State<AudioFile> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Süre göstergesi
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
@@ -117,7 +111,6 @@ class _AudioFileState extends State<AudioFile> {
           ),
         ),
 
-        // İlerleme çubuğu
         Slider(
           value: _position.inSeconds.toDouble(),
           min: 0,
@@ -127,17 +120,14 @@ class _AudioFileState extends State<AudioFile> {
           },
         ),
 
-        // Kontrol butonları
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Hız kontrolü
             IconButton(
               icon: Text("${playbackSpeed}x"),
               onPressed: _changeSpeed,
             ),
 
-            // Geri sarma
             IconButton(
               icon: Icon(Icons.replay_10),
               onPressed: () async {
@@ -147,7 +137,6 @@ class _AudioFileState extends State<AudioFile> {
               },
             ),
 
-            // Oynat/Duraklat
             IconButton(
               icon: Icon(
                 isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
@@ -156,7 +145,6 @@ class _AudioFileState extends State<AudioFile> {
               onPressed: _togglePlay,
             ),
 
-            // İleri sarma
             IconButton(
               icon: Icon(Icons.forward_10),
               onPressed: () async {
@@ -166,7 +154,6 @@ class _AudioFileState extends State<AudioFile> {
               },
             ),
 
-            // Tekrar modu
             IconButton(
               icon: Icon(
                 isRepeated ? Icons.repeat_one : Icons.repeat,

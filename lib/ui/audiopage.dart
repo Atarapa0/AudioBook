@@ -33,7 +33,6 @@ class _AudioPageState extends State<AudioPage> {
       backgroundColor: colorfile.audioBluishBackground,
       body: Stack(
         children: [
-          // Üst kısım arka plan
           Positioned(
             top: 0,
             left: 0,
@@ -44,7 +43,6 @@ class _AudioPageState extends State<AudioPage> {
             ),
           ),
 
-          // Üst menü
           Positioned(
             top: 0,
             left: 0,
@@ -52,7 +50,7 @@ class _AudioPageState extends State<AudioPage> {
             child: AppBar(
               leading: IconButton(
                   onPressed: () {
-                    audioPlayer.stop(); // Geri dönerken sesi durdur
+                    audioPlayer.stop();
                     Navigator.pop(context);
                   },
                   icon: Icon(Icons.arrow_back_ios_new)
@@ -68,7 +66,6 @@ class _AudioPageState extends State<AudioPage> {
             ),
           ),
 
-          // Ana içerik konteyneri
           Positioned(
             left: 0,
             right: 0,
@@ -80,29 +77,29 @@ class _AudioPageState extends State<AudioPage> {
                 borderRadius: BorderRadius.all(Radius.circular(30)),
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center, // Tüm içeriği dikey olarak ortala
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(height: screenHeight * 0.1),
                   Text(
                     widget.bookData["title"],
-                    textAlign: TextAlign.center, // Başlığı yatay olarak ortala
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Avenir',
                     ),
                   ),
-                  SizedBox(height: 10), // Başlık ve alt metin arasına boşluk ekle
+                  SizedBox(height: 10),
                   Text(
                     widget.bookData["text"],
-                    textAlign: TextAlign.center, // Alt metni yatay olarak ortala
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
                       color: colorfile.subTitleText,
                       fontFamily: 'Avenir',
                     ),
                   ),
-                  SizedBox(height: 20), // Alt metin ve ses çalar arasında boşluk
+                  SizedBox(height: 20),
                   AudioFile(
                     audioPlayer: audioPlayer,
                     bookData: widget.bookData,
@@ -113,7 +110,6 @@ class _AudioPageState extends State<AudioPage> {
           ),
 
 
-          // Kitap kapağı resmi
           Positioned(
             left: screenWidth / 2 - 75,
             right: screenWidth / 2 - 75,
