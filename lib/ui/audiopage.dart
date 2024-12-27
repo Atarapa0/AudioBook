@@ -1,7 +1,8 @@
+import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:ebook/ui/Audio_File.dart';
 import 'package:flutter/material.dart';
-import 'package:ebook/ui/colorfile.dart' as colorfile;
+import 'package:audiobook/ui/Audio_File.dart';
+import 'package:audiobook/ui/colorfile.dart' as colorfile;
 
 class AudioPage extends StatefulWidget {
   final Map<String, dynamic> bookData;
@@ -17,11 +18,76 @@ class AudioPage extends StatefulWidget {
 
 class _AudioPageState extends State<AudioPage> {
   late AudioPlayer audioPlayer;
+  List<Map<String, dynamic>>? relatedBooks;
 
   @override
   void initState() {
     super.initState();
     audioPlayer = AudioPlayer();
+    loadRelatedBooks();
+  }
+
+  void loadRelatedBooks() async {
+    try {
+      final String jsonContent = await DefaultAssetBundle.of(context)
+          .loadString("json/books.json");
+      setState(() {
+        relatedBooks = List<Map<String, dynamic>>.from(json.decode(jsonContent));
+      });
+    } catch (e) {
+      print("Error loading related books: $e");
+    }
+  }
+
+  Widget buildRelatedBookCard(Map<String, dynamic> book) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AudioPage(bookData: book),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        width: 120,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 160,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: AssetImage(book["img"]),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              book["title"],
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              book["text"],
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                color: colorfile.subTitleText,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -49,17 +115,17 @@ class _AudioPageState extends State<AudioPage> {
             right: 0,
             child: AppBar(
               leading: IconButton(
-                  onPressed: () {
-                    audioPlayer.stop();
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Icons.arrow_back_ios_new)
+                onPressed: () {
+                  audioPlayer.stop();
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_ios_new),
               ),
               actions: [
                 IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.search)
-                )
+                  onPressed: () {},
+                  icon: Icon(Icons.search),
+                ),
               ],
               backgroundColor: Colors.transparent,
               elevation: 0,
@@ -109,7 +175,6 @@ class _AudioPageState extends State<AudioPage> {
             ),
           ),
 
-
           Positioned(
             left: screenWidth / 2 - 75,
             right: screenWidth / 2 - 75,
@@ -128,14 +193,54 @@ class _AudioPageState extends State<AudioPage> {
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: Colors.white, width: 2),
                     image: DecorationImage(
-                        image: AssetImage(widget.bookData["img"]),
-                        fit: BoxFit.cover
+                      image: AssetImage(widget.bookData["img"]),
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
               ),
             ),
-          )
+          ),
+
+          Positioned(
+            left: 0,
+            right: 0,
+            top: screenHeight * 0.65,
+            height: screenHeight * 0.35,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "More Books",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Avenir',
+                        ),
+                      ),
+
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: relatedBooks == null
+                      ? Center(child: CircularProgressIndicator())
+                      : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: relatedBooks!.length,
+                    itemBuilder: (context, index) {
+                      return buildRelatedBookCard(relatedBooks![index]);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

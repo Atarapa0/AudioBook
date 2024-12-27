@@ -56,7 +56,7 @@ class _AudioFileState extends State<AudioFile> {
     try {
       await widget.audioPlayer.setSourceAsset(widget.bookData["audio"]);
     } catch (e) {
-      print("Ses dosyası yüklenirken hata: $e");
+      print("Error loading audio file: $e");
     }
   }
 

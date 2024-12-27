@@ -1,5 +1,4 @@
-import 'package:ebook/ui/audiopage.dart';
-import 'package:ebook/ui/home_page.dart';
+import 'package:audiobook/ui/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,16 +8,15 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Audio Player',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue
+          primarySwatch: Colors.blue
       ),
-      home:  HomePage(),
+      home: HomePage(),
     );
   }
 }

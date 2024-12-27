@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:ebook/ui/tabs.dart';
+import 'package:audiobook/ui/tabs.dart';
 import 'package:flutter/material.dart';
-import 'package:ebook/ui/colorfile.dart' as colorfile;
-import 'package:ebook/ui/audiopage.dart'; // Add this import
+import 'package:audiobook/ui/colorfile.dart' as colorfile;
+import 'package:audiobook/ui/audiopage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
